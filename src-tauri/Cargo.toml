@@ -1,0 +1,47 @@
+[package]
+name = "berri-recall"
+version = "0.1.0"
+description = "Terminal doesn't remember what you typed last week? This does."
+authors = ["Monish Obaid"]
+edition = "2021"
+
+[lib]
+name = "berri_recall_lib"
+crate-type = ["rlib"]
+
+[[bin]]
+name = "berri-recall"
+path = "src/main.rs"
+
+[dependencies]
+# Core
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Database
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio-native-tls", "migrate"] }
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1.12"
+fuzzy-matcher = "0.3"
+git2 = "0.19"
+dirs = "6.0"
+
+[dev-dependencies]
+tempfile = "3.23"
+tokio-test = "0.4"
+
+[build-dependencies]
+
+[profile.release]
+opt-level = "z"     # Optimize for size
+lto = true          # Link-time optimization
+codegen-units = 1   # Better optimization
+strip = true        # Strip symbols
+panic = "abort"     # Smaller binary

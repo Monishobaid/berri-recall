@@ -1,0 +1,44 @@
+{
+  "productName": "recall-cli",
+  "version": "0.1.0",
+  "identifier": "com.recall.cli",
+  "build": {
+    "beforeDevCommand": "",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "",
+    "frontendDist": "../dist"
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [],
+    "resources": [],
+    "externalBin": [],
+    "copyright": "",
+    "category": "DeveloperTool",
+    "shortDescription": "Intelligent CLI command memory system",
+    "longDescription": "An intelligent CLI tool that remembers commands per project, auto-detects patterns, and suggests helpful commands.",
+    "linux": {
+      "deb": {
+        "depends": []
+      }
+    },
+    "macOS": {
+      "frameworks": [],
+      "minimumSystemVersion": "",
+      "exceptionDomain": ""
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  }
+}

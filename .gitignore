@@ -1,0 +1,51 @@
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Test data
+test-data/
+*.tmp
+
+# OS
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+*.exe
+*.dmg
+*.app
+*.deb
+*.rpm
+
+# Temporary files
+tmp/
+temp/
+*.tar.gz
+*.zip
+
+# User data (don't commit local command history)
+.berri-recall/
+.recall/
