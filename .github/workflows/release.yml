@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build-macos:
     runs-on: macos-latest
@@ -13,47 +16,21 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
-      - name: Install dependencies
-        run: |
-          brew install openssl@3
-
-      - name: Build ARM64
-        env:
-          OPENSSL_DIR: /opt/homebrew/opt/openssl@3
+      - name: Build (native ARM64 only)
         run: |
           cd src-tauri
-          cargo build --release --target aarch64-apple-darwin
+          cargo build --release
 
-      - name: Build x86_64
-        env:
-          OPENSSL_DIR: /usr/local/opt/openssl@3
+      - name: Package
         run: |
-          cd src-tauri
-          cargo build --release --target x86_64-apple-darwin
-
-      - name: Package ARM64
-        run: |
-          cd src-tauri/target/aarch64-apple-darwin/release
+          cd src-tauri/target/release
           tar -czf berri-recall-macos-arm64.tar.gz berri-recall
-          mv berri-recall-macos-arm64.tar.gz ../../../
 
-      - name: Package x86_64
-        run: |
-          cd src-tauri/target/x86_64-apple-darwin/release
-          tar -czf berri-recall-macos-amd64.tar.gz berri-recall
-          mv berri-recall-macos-amd64.tar.gz ../../../
-
-      - name: Upload Release Assets
+      - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            src-tauri/berri-recall-macos-arm64.tar.gz
-            src-tauri/berri-recall-macos-amd64.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: src-tauri/target/release/berri-recall-macos-arm64.tar.gz
 
   build-linux:
     runs-on: ubuntu-latest
@@ -77,14 +54,11 @@ jobs:
         run: |
           cd src-tauri/target/release
           tar -czf berri-recall-linux-amd64.tar.gz berri-recall
-          mv berri-recall-linux-amd64.tar.gz ../
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: src-tauri/target/berri-recall-linux-amd64.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: src-tauri/target/release/berri-recall-linux-amd64.tar.gz
 
   build-windows:
     runs-on: windows-latest
@@ -103,11 +77,8 @@ jobs:
         run: |
           cd src-tauri/target/release
           Compress-Archive -Path berri-recall.exe -DestinationPath berri-recall-windows-amd64.zip
-          Move-Item berri-recall-windows-amd64.zip ../
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: src-tauri/target/berri-recall-windows-amd64.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: src-tauri/target/release/berri-recall-windows-amd64.zip

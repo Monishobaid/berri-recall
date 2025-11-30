@@ -26,12 +26,11 @@ echo "Detected: $OS $ARCH"
 
 case "$OS" in
   Darwin)
+    BINARY_URL="https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-macos-arm64.tar.gz"
     if [ "$ARCH" = "arm64" ]; then
-      BINARY_URL="https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-macos-arm64.tar.gz"
       PLATFORM="macOS (Apple Silicon)"
     else
-      BINARY_URL="https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-macos-amd64.tar.gz"
-      PLATFORM="macOS (Intel)"
+      PLATFORM="macOS (Intel - running ARM binary via Rosetta)"
     fi
     ;;
   Linux)

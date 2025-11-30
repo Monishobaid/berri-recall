@@ -44,8 +44,7 @@ berri-recall setup
 ### From GitHub releases
 
 Grab the latest binary for your platform:
-- [macOS (Apple Silicon)](https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-macos-arm64.tar.gz)
-- [macOS (Intel)](https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-macos-amd64.tar.gz)
+- [macOS (ARM & Intel via Rosetta)](https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-macos-arm64.tar.gz)
 - [Linux](https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-linux-amd64.tar.gz)
 - [Windows](https://github.com/monishobaid/berri-recall/releases/latest/download/berri-recall-windows-amd64.zip)
 
