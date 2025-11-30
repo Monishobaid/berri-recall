@@ -6,21 +6,88 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        include:
-          - os: macos-13  # Intel runner
-            name: berri-recall-macos-amd64
-          - os: macos-latest  # ARM runner
-            name: berri-recall-macos-arm64
-          - os: ubuntu-latest
-            name: berri-recall-linux-amd64
-          - os: windows-latest
-            name: berri-recall-windows-amd64
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    runs-on: ${{ matrix.os }}
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
+      - name: Install dependencies
+        run: |
+          brew install openssl@3
+
+      - name: Build ARM64
+        env:
+          OPENSSL_DIR: /opt/homebrew/opt/openssl@3
+        run: |
+          cd src-tauri
+          cargo build --release --target aarch64-apple-darwin
+
+      - name: Build x86_64
+        env:
+          OPENSSL_DIR: /usr/local/opt/openssl@3
+        run: |
+          cd src-tauri
+          cargo build --release --target x86_64-apple-darwin
+
+      - name: Package ARM64
+        run: |
+          cd src-tauri/target/aarch64-apple-darwin/release
+          tar -czf berri-recall-macos-arm64.tar.gz berri-recall
+          mv berri-recall-macos-arm64.tar.gz ../../../
+
+      - name: Package x86_64
+        run: |
+          cd src-tauri/target/x86_64-apple-darwin/release
+          tar -czf berri-recall-macos-amd64.tar.gz berri-recall
+          mv berri-recall-macos-amd64.tar.gz ../../../
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            src-tauri/berri-recall-macos-arm64.tar.gz
+            src-tauri/berri-recall-macos-amd64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev pkg-config
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        run: |
+          cd src-tauri
+          cargo build --release
+
+      - name: Package
+        run: |
+          cd src-tauri/target/release
+          tar -czf berri-recall-linux-amd64.tar.gz berri-recall
+          mv berri-recall-linux-amd64.tar.gz ../
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: src-tauri/target/berri-recall-linux-amd64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -32,23 +99,15 @@ jobs:
           cd src-tauri
           cargo build --release
 
-      - name: Package (Unix)
-        if: matrix.os != 'windows-latest'
+      - name: Package
         run: |
           cd src-tauri/target/release
-          tar -czf ${{ matrix.name }}.tar.gz berri-recall
-
-      - name: Package (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          cd src-tauri/target/release
-          7z a ${{ matrix.name }}.zip berri-recall.exe
+          Compress-Archive -Path berri-recall.exe -DestinationPath berri-recall-windows-amd64.zip
+          Move-Item berri-recall-windows-amd64.zip ../
 
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          files: |
-            src-tauri/target/release/${{ matrix.name }}.tar.gz
-            src-tauri/target/release/${{ matrix.name }}.zip
+          files: src-tauri/target/berri-recall-windows-amd64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
