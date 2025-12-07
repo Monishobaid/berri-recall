@@ -277,8 +277,8 @@ async fn handle_uninstall(_args: &[String]) -> Result<()> {
     }
 
     println!("\n✓ Uninstall complete!");
-    println!("Note: Database (~/.recall/) was not removed.");
-    println!("To remove all data: rm -rf ~/.recall");
+    println!("Note: Database (~/.berri-recall/) was not removed.");
+    println!("To remove all data: rm -rf ~/.berri-recall");
 
     Ok(())
 }

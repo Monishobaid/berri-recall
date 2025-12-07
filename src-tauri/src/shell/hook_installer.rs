@@ -28,7 +28,7 @@ impl HookInstaller {
         let home = dirs::home_dir()
             .ok_or_else(|| RecallError::Config("Could not determine home directory".to_string()))?;
 
-        let hooks_dir = home.join(".recall").join("hooks");
+        let hooks_dir = home.join(".berri-recall").join("hooks");
 
         Ok(Self { hooks_dir })
     }
@@ -194,7 +194,7 @@ impl HookInstaller {
             content.push('\n');
         }
 
-        content.push_str("\n# recall-cli hook (auto-generated)\n");
+        content.push_str("\n# berri-recall hook (auto-generated)\n");
         content.push_str(&source_cmd);
         content.push('\n');
 
