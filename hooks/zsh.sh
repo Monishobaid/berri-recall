@@ -16,14 +16,14 @@ __berri_precmd() {
     # Don't record berri commands
     [[ "$__berri_last_cmd" =~ ^berri ]] && return 0
 
-    # Background job so it doesn't block
-    (
+    # Run silently in background without job notification
+    {
         berri-recall record \
             --command "$__berri_last_cmd" \
             --exit-code "$exit_code" \
             --cwd "$PWD" \
             &> /dev/null
-    ) &
+    } &!
 
     __berri_last_cmd=""
 }
